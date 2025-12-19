@@ -20,7 +20,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;800&display=swap" rel="stylesheet">
     
     <!-- Manifest for PWA Support -->
-    <link rel="manifest" href='data:application/manifest+json,{"name":"Mon Aide de Français","short_name":"Aide FR","start_url":".","display":"standalone","background_color":"#f8fbff","theme_color":"#4A6FA5","icons":[{"src":"data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%234A6FA5%22/><text x=%2210%22 y=%2275%22 font-size=%2270%22>🇫🇷</text></svg>","sizes":"192x192","type":"image/svg+xml","purpose":"any maskable"}]}' />
+    <link rel="manifest" id="pwa-manifest">
 
     <style>
         :root { --primary: #4A6FA5; }
@@ -89,6 +89,18 @@
             animation: spin 1s linear infinite;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Custom Modal for Install Instructions */
+        #installModal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
     </style>
 </head>
 <body class="pb-24">
@@ -105,15 +117,27 @@
                 <span class="text-blue-500">Maman,</span> <span class="text-red-500">Aide-moi!</span>
             </h1>
             <div class="flex gap-2">
-                <!-- New Install Button -->
-                <button id="installBtn" onclick="installApp()" class="hidden action-circle w-12 h-12 flex items-center justify-center text-xl" title="Install App">📥</button>
+                <!-- Install Button -->
+                <button id="installBtn" onclick="handleInstallClick()" class="hidden action-circle w-12 h-12 flex items-center justify-center text-xl" title="Installer">📥</button>
                 <button onclick="shareApp()" class="action-circle w-12 h-12 flex items-center justify-center text-xl">📤</button>
             </div>
         </div>
     </header>
 
+    <!-- Manual Install Info Modal -->
+    <div id="installModal" onclick="this.style.display='none'">
+        <div class="bg-white p-8 rounded-[32px] max-w-sm w-full text-center shadow-2xl" onclick="event.stopPropagation()">
+            <div class="text-5xl mb-4">📲</div>
+            <h2 class="text-2xl font-black mb-4">Installer l'app</h2>
+            <p class="text-gray-600 mb-6 font-bold leading-relaxed">
+                Appuie sur les <span class="text-blue-600">trois points (⋮)</span> dans le menu de Chrome, puis choisis <br>
+                <span class="bg-blue-100 px-2 py-1 rounded">"Installer l'application"</span>.
+            </p>
+            <button onclick="document.getElementById('installModal').style.display='none'" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-black">Compris !</button>
+        </div>
+    </div>
+
     <main class="max-w-md mx-auto px-4">
-        <!-- Dashboard / Categories -->
         <div id="categoriesView" class="grid grid-cols-2 gap-4">
             <div onclick="showView('homework')" class="col-span-2 kid-card cat-homework p-6 flex items-center justify-between cursor-pointer">
                 <div class="flex items-center gap-4">
@@ -125,6 +149,7 @@
                 </div>
                 <span id="hwCount" class="bg-white/60 px-4 py-2 rounded-full text-xs font-black">0</span>
             </div>
+            <!-- All Categories -->
             <div onclick="showView('school')" class="kid-card cat-school p-6 text-center cursor-pointer"><div class="text-4xl mb-2">🏫</div><h2 class="font-black text-sm">School</h2></div>
             <div onclick="showView('basics')" class="kid-card cat-basics p-6 text-center cursor-pointer"><div class="text-4xl mb-2">✨</div><h2 class="font-black text-sm">Yes/No</h2></div>
             <div onclick="showView('feelings')" class="kid-card cat-feelings p-6 text-center cursor-pointer"><div class="text-4xl mb-2">😊</div><h2 class="font-black text-sm">Feelings</h2></div>
@@ -152,35 +177,55 @@
     <script>
         const apiKey = ""; 
 
-        // --- INSTALL LOGIC (NEW) ---
+        // --- PWA SETUP ---
+        const manifest = {
+            "name": "Mon Aide de Français",
+            "short_name": "Aide FR",
+            "start_url": window.location.href,
+            "display": "standalone",
+            "scope": "/",
+            "background_color": "#f8fbff",
+            "theme_color": "#4A6FA5",
+            "icons": [{
+                "src": "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%234A6FA5%22/><text x=%2210%22 y=%2275%22 font-size=%2270%22>🇫🇷</text></svg>",
+                "sizes": "192x192",
+                "type": "image/svg+xml",
+                "purpose": "any maskable"
+            }]
+        };
+        document.getElementById('pwa-manifest').setAttribute('href', 'data:application/manifest+json,' + JSON.stringify(manifest));
+
         let deferredPrompt;
         const installBtn = document.getElementById('installBtn');
 
+        // Force show button if not in standalone mode (only on mobile)
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+        if (!isStandalone) {
+            installBtn.classList.remove('hidden');
+        }
+
         window.addEventListener('beforeinstallprompt', (e) => {
-            // Prevent Chrome from showing its own prompt automatically
             e.preventDefault();
-            // Stash the event so it can be triggered later.
             deferredPrompt = e;
-            // Show the install button
             installBtn.classList.remove('hidden');
         });
 
-        async function installApp() {
-            if (!deferredPrompt) return;
-            // Show the install prompt
-            deferredPrompt.prompt();
-            // Wait for the user to respond to the prompt
-            const { outcome } = await deferredPrompt.userChoice;
-            // We've used the prompt, and can't use it again, throw it away
-            deferredPrompt = null;
-            // Hide the button
-            installBtn.classList.add('hidden');
+        async function handleInstallClick() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    deferredPrompt = null;
+                    installBtn.classList.add('hidden');
+                }
+            } else {
+                // Show manual instructions if prompt isn't ready
+                document.getElementById('installModal').style.display = 'flex';
+            }
         }
 
         window.addEventListener('appinstalled', () => {
-            // Log install to analytics or hide UI
             installBtn.classList.add('hidden');
-            deferredPrompt = null;
         });
 
         // --- SPEECH PRE-WARMING ---
@@ -193,107 +238,25 @@
             speechWarmed = true;
         }
 
+        // --- DATA & LOGIC ---
         let hwPhrases = JSON.parse(localStorage.getItem('homeworkPhrases')) || [
             { fr: "Je m'appelle Sophie", en: "My name is Sophie" },
             { fr: "J'ai six ans", en: "I am six years old" }
         ];
 
         const datasets = {
-            "basics": [
-                { fr: "Oui", en: "Yes" }, { fr: "Non", en: "No" }, { fr: "Merci", en: "Thank you" }, 
-                { fr: "De rien", en: "You're welcome" }, { fr: "S'il vous plaît", en: "Please" }, 
-                { fr: "Pardon", en: "Sorry" }, { fr: "Excusez-moi", en: "Excuse me" },
-                { fr: "Je comprends", en: "I understand" }, { fr: "Je ne comprends pas", en: "I don't understand" },
-                { fr: "Je ne sais pas", en: "I don't know" }, { fr: "D'accord", en: "Okay" },
-                { fr: "Bien sûr", en: "Of course" }, { fr: "Peut-être", en: "Maybe" },
-                { fr: "Pas encore", en: "Not yet" }, { fr: "Maintenant", en: "Now" },
-                { fr: "Plus tard", en: "Later" }, { fr: "Ici", en: "Here" },
-                { fr: "Là-bas", en: "Over there" }, { fr: "Moi", en: "Me" }, { fr: "Toi", en: "You" }
-            ],
-            "school": [
-                { fr: "Puis-je aller aux toilettes?", en: "Can I go to the bathroom?" },
-                { fr: "Puis-je boire de l'eau?", en: "Can I drink some water?" },
-                { fr: "J'ai fini!", en: "I'm finished!" },
-                { fr: "Aide-moi, s'il vous plaît", en: "Help me, please" },
-                { fr: "Répétez, s'il vous plaît", en: "Repeat, please" },
-                { fr: "Asseyez-vous", en: "Sit down" },
-                { fr: "Levez-vous", en: "Stand up" },
-                { fr: "Écoutez", en: "Listen" },
-                { fr: "Regardez", en: "Look" },
-                { fr: "Ouvrez le livre", en: "Open the book" },
-                { fr: "Fermez le livre", en: "Close the book" },
-                { fr: "Écrivez", en: "Write" },
-                { fr: "Lisez", en: "Read" },
-                { fr: "Dessinez", en: "Draw" },
-                { fr: "Chantez", en: "Sing" },
-                { fr: "Silence, s'il vous plaît", en: "Silence, please" },
-                { fr: "Rangez vos affaires", en: "Put your things away" },
-                { fr: "Sortez un crayon", en: "Take out a pencil" },
-                { fr: "Donnez-moi ça", en: "Give me that" },
-                { fr: "C'est mon pupitre", en: "It's my desk" }
-            ],
-            "feelings": [
-                { fr: "Je suis contente", en: "I am happy" },
-                { fr: "Je suis triste", en: "I am sad" },
-                { fr: "Je suis fatiguée", en: "I am tired" },
-                { fr: "Je suis malade", en: "I am sick" },
-                { fr: "Je suis fâchée", en: "I am angry" },
-                { fr: "J'ai peur", en: "I am scared" },
-                { fr: "Je suis excitée", en: "I am excited" },
-                { fr: "J'ai faim", en: "I am hungry" },
-                { fr: "J'ai soif", en: "I am thirsty" },
-                { fr: "J'ai froid", en: "I am cold" },
-                { fr: "J'ai chaud", en: "I am hot" },
-                { fr: "Je suis surprise", en: "I am surprised" },
-                { fr: "Je suis fière", en: "I am proud" },
-                { fr: "Je suis timide", en: "I am shy" },
-                { fr: "C'est drôle!", en: "It's funny!" },
-                { fr: "Je m'ennuie", en: "I am bored" },
-                { fr: "Je suis nerveuse", en: "I am nervous" },
-                { fr: "Je suis calme", en: "I am calm" },
-                { fr: "Je t'aime", en: "I love you" },
-                { fr: "C'est super!", en: "It's great!" }
-            ],
-            "urgent": [
-                { fr: "Aidez-moi!", en: "Help me!" }, { fr: "Arrête!", en: "Stop!" },
-                { fr: "J'ai mal", en: "I am hurt" }, { fr: "Je suis perdue", en: "I am lost" },
-                { fr: "Je me sens mal", en: "I feel sick" }, { fr: "Où est Maman?", en: "Where is Mom?" },
-                { fr: "J'ai besoin d'un pansement", en: "I need a bandage" }, { fr: "Attention!", en: "Watch out!" },
-                { fr: "Vite!", en: "Quickly!" }, { fr: "Ne fais pas ça", en: "Don't do that" }
-            ],
-            "questions": [
-                { fr: "Qu'est-ce que c'est?", en: "What is it?" }, { fr: "Pourquoi?", en: "Why?" },
-                { fr: "Où est...?", en: "Where is...?" }, { fr: "Qui est-ce?", en: "Who is it?" },
-                { fr: "Comment ça va?", en: "How are you?" }
-            ],
-            "recess": [
-                { fr: "On joue ensemble?", en: "Shall we play together?" }, { fr: "C'est mon tour", en: "It's my turn" },
-                { fr: "Attrape!", en: "Catch!" }, { fr: "C'est amusant!", en: "It's fun!" }
-            ],
-            "cafeteria": [
-                { fr: "J'ai faim", en: "I'm hungry" }, { fr: "Ma boîte à lunch", en: "My lunchbox" },
-                { fr: "C'est bon!", en: "It's good!" }, { fr: "De l'eau, s'il vous plaît", en: "Water, please" }
-            ],
-            "colors": [
-                { fr: "Rouge", en: "Red" }, { fr: "Bleu", en: "Blue" }, { fr: "Jaune", en: "Yellow" },
-                { fr: "Vert", en: "Green" }, { fr: "Orange", en: "Orange" }, { fr: "Rose", en: "Pink" }
-            ],
-            "numbers": [
-                { fr: "Un", en: "1" }, { fr: "Deux", en: "2" }, { fr: "Trois", en: "3" },
-                { fr: "Quatre", en: "4" }, { fr: "Cinq", en: "5" }, { fr: "Six", en: "6" }
-            ],
-            "supplies": [
-                { fr: "Un crayon", en: "A pencil" }, { fr: "Une gomme", en: "An eraser" },
-                { fr: "Un cahier", en: "A notebook" }, { fr: "Mon sac à dos", en: "My backpack" }
-            ],
-            "greetings": [
-                { fr: "Bonjour", en: "Hello" }, { fr: "Salut", en: "Hi" },
-                { fr: "Au revoir", en: "Goodbye" }, { fr: "À demain", en: "See you tomorrow" }
-            ],
-            "others": [
-                { fr: "Regarde!", en: "Look!" }, { fr: "Moi aussi", en: "Me too" },
-                { fr: "C'est cool", en: "It's cool" }, { fr: "C'est génial", en: "It's awesome" }
-            ]
+            "basics": [{ fr: "Oui", en: "Yes" }, { fr: "Non", en: "No" }, { fr: "Merci", en: "Thank you" }, { fr: "S'il vous plaît", en: "Please" }, { fr: "Pardon", en: "Sorry" }, { fr: "D'accord", en: "Okay" }],
+            "school": [{ fr: "Puis-je aller aux toilettes?", en: "Can I go to the bathroom?" }, { fr: "J'ai fini!", en: "I'm finished!" }, { fr: "Aide-moi, s'il vous plaît", en: "Help me, please" }],
+            "feelings": [{ fr: "Je suis contente", en: "I am happy" }, { fr: "Je suis fatiguée", en: "I am tired" }, { fr: "J'ai faim", en: "I am hungry" }],
+            "urgent": [{ fr: "Aidez-moi!", en: "Help me!" }, { fr: "Arrête!", en: "Stop!" }, { fr: "J'ai mal", en: "I am hurt" }],
+            "questions": [{ fr: "Qu'est-ce que c'est?", en: "What is it?" }, { fr: "Pourquoi?", en: "Why?" }],
+            "recess": [{ fr: "On joue ensemble?", en: "Shall we play together?" }, { fr: "C'est mon tour", en: "It's my turn" }],
+            "cafeteria": [{ fr: "J'ai faim", en: "I'm hungry" }, { fr: "C'est bon!", en: "It's good!" }],
+            "colors": [{ fr: "Rouge", en: "Red" }, { fr: "Bleu", en: "Blue" }, { fr: "Jaune", en: "Yellow" }],
+            "numbers": [{ fr: "Un", en: "1" }, { fr: "Deux", en: "2" }, { fr: "Trois", en: "3" }],
+            "supplies": [{ fr: "Un crayon", en: "A pencil" }, { fr: "Une gomme", en: "An eraser" }],
+            "greetings": [{ fr: "Bonjour", en: "Hello" }, { fr: "Salut", en: "Hi" }, { fr: "Au revoir", en: "Goodbye" }],
+            "others": [{ fr: "Regarde!", en: "Look!" }, { fr: "Moi aussi", en: "Me too" }]
         };
 
         function showView(viewId) {
@@ -346,11 +309,9 @@
             if (!text) return;
             preWarmSpeech();
             window.speechSynthesis.cancel();
-            
             document.querySelectorAll('.phrase-card').forEach(c => c.classList.remove('speaking'));
             const card = document.getElementById(id);
             if (card) card.classList.add('speaking');
-            
             const ut = new SpeechSynthesisUtterance(text);
             ut.lang = lang;
             ut.rate = lang === 'fr-FR' ? 0.75 : 0.9;
@@ -362,10 +323,8 @@
             const val = document.getElementById('hwInput').value;
             const btn = document.getElementById('saveHwBtn');
             const lines = val.split('\n').map(l => l.trim()).filter(l => l !== "");
-            
             btn.disabled = true;
             btn.innerHTML = `<div class="loader mx-auto"></div>`;
-
             let newList = [];
             for (let line of lines) {
                 if (line.includes('|')) {
@@ -376,18 +335,13 @@
                         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ 
-                                contents: [{ parts: [{ text: `Translate French to simple English for a child: "${line}"` }] }] 
-                            })
+                            body: JSON.stringify({ contents: [{ parts: [{ text: `Translate to simple English for a child: "${line}"` }] }] })
                         });
                         const data = await response.json();
                         newList.push({ fr: line, en: data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || line });
                     } catch (e) { newList.push({ fr: line, en: line }); }
-                } else {
-                    newList.push({ fr: line, en: line });
-                }
+                } else { newList.push({ fr: line, en: line }); }
             }
-
             hwPhrases = newList;
             localStorage.setItem('homeworkPhrases', JSON.stringify(hwPhrases));
             renderPhrases(hwPhrases, 'homework');
@@ -404,29 +358,6 @@
         function updateHwCount() {
             const el = document.getElementById('hwCount');
             if (el) el.innerText = hwPhrases.length;
-        }
-
-        window.addEventListener('online',  () => document.getElementById('offlineIndicator').classList.add('hidden'));
-        window.addEventListener('offline', () => document.getElementById('offlineIndicator').classList.remove('hidden'));
-        
-        if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
-            try {
-                const swCode = `
-                    const CACHE_NAME = 'aide-fr-v2';
-                    self.addEventListener('install', (event) => {
-                        event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(['./'])));
-                    });
-                    self.addEventListener('fetch', (event) => {
-                        event.respondWith(caches.match(event.request).then((res) => res || fetch(event.request)));
-                    });
-                `;
-                const blob = new Blob([swCode], { type: 'application/javascript' });
-                const swUrl = URL.createObjectURL(blob);
-                navigator.serviceWorker.register(swUrl, { scope: './' })
-                    .catch(err => console.log('SW registration skipped:', err.message));
-            } catch (e) {
-                console.warn("Service worker setup failed:", e);
-            }
         }
 
         updateHwCount();
