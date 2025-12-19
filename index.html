@@ -13,14 +13,14 @@
     <meta name="apple-mobile-web-app-title" content="Aide FR">
     
     <!-- Emoji Icon for PWA -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇫🇷</text></svg>">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇫🇷</text></svg>">
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%234A6FA5%22/><text x=%2210%22 y=%2275%22 font-size=%2270%22>🇫🇷</text></svg>">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;800&display=swap" rel="stylesheet">
     
     <!-- Manifest for PWA Support -->
-    <link rel="manifest" href="data:application/json,{'name':'Mon Aide de Français','short_name':'Aide FR','start_url':'.','display':'standalone','background_color':'#f8fbff','theme_color':'#4A6FA5','icons':[{'src':'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%234A6FA5%22/><text x=%2210%22 y=%2275%22 font-size=%2270%22>🇫🇷</text></svg>','sizes':'192x192','type':'image/svg+xml'}]}">
+    <link rel="manifest" href='data:application/manifest+json,{"name":"Mon Aide de Français","short_name":"Aide FR","start_url":".","display":"standalone","background_color":"#f8fbff","theme_color":"#4A6FA5","icons":[{"src":"data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%234A6FA5%22/><text x=%2210%22 y=%2275%22 font-size=%2270%22>🇫🇷</text></svg>","sizes":"192x192","type":"image/svg+xml","purpose":"any maskable"}]}' />
 
     <style>
         :root { --primary: #4A6FA5; }
@@ -97,14 +97,18 @@
     </div>
 
     <header class="p-6 text-center sticky top-0 bg-[#f8fbff]/90 backdrop-blur-md z-50">
-        <div id="headerNav" class="flex justify-between items-center max-w-md mx-auto">
+        <div id="headerNav" class="flex justify-between items-center max-w-md mx-auto gap-2">
             <button id="backBtn" onclick="showView('categories')" class="hidden back-button px-5 py-2 font-black text-blue-600 flex items-center gap-2">
                 <span class="text-xl">🏠</span>
             </button>
-            <h1 class="text-2xl font-black flex-1 text-blue-900" onclick="location.reload()">
+            <h1 class="text-2xl font-black flex-1 text-blue-900 text-left truncate" onclick="location.reload()">
                 <span class="text-blue-500">Maman,</span> <span class="text-red-500">Aide-moi!</span>
             </h1>
-            <button onclick="shareApp()" class="action-circle w-12 h-12 flex items-center justify-center text-xl">📤</button>
+            <div class="flex gap-2">
+                <!-- New Install Button -->
+                <button id="installBtn" onclick="installApp()" class="hidden action-circle w-12 h-12 flex items-center justify-center text-xl" title="Install App">📥</button>
+                <button onclick="shareApp()" class="action-circle w-12 h-12 flex items-center justify-center text-xl">📤</button>
+            </div>
         </div>
     </header>
 
@@ -148,7 +152,38 @@
     <script>
         const apiKey = ""; 
 
-        // --- SPEECH PRE-WARMING (CRITICAL FOR IOS SAFARI) ---
+        // --- INSTALL LOGIC (NEW) ---
+        let deferredPrompt;
+        const installBtn = document.getElementById('installBtn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent Chrome from showing its own prompt automatically
+            e.preventDefault();
+            // Stash the event so it can be triggered later.
+            deferredPrompt = e;
+            // Show the install button
+            installBtn.classList.remove('hidden');
+        });
+
+        async function installApp() {
+            if (!deferredPrompt) return;
+            // Show the install prompt
+            deferredPrompt.prompt();
+            // Wait for the user to respond to the prompt
+            const { outcome } = await deferredPrompt.userChoice;
+            // We've used the prompt, and can't use it again, throw it away
+            deferredPrompt = null;
+            // Hide the button
+            installBtn.classList.add('hidden');
+        }
+
+        window.addEventListener('appinstalled', () => {
+            // Log install to analytics or hide UI
+            installBtn.classList.add('hidden');
+            deferredPrompt = null;
+        });
+
+        // --- SPEECH PRE-WARMING ---
         let speechWarmed = false;
         function preWarmSpeech() {
             if (speechWarmed) return;
@@ -220,147 +255,44 @@
                 { fr: "C'est super!", en: "It's great!" }
             ],
             "urgent": [
-                { fr: "Aidez-moi!", en: "Help me!" },
-                { fr: "Arrête!", en: "Stop!" },
-                { fr: "J'ai mal", en: "I am hurt" },
-                { fr: "Je suis perdue", en: "I am lost" },
-                { fr: "Je me sens mal", en: "I feel sick" },
-                { fr: "Où est Maman?", en: "Where is Mom?" },
-                { fr: "J'ai besoin d'un pansement", en: "I need a bandage" },
-                { fr: "Attention!", en: "Watch out!" },
-                { fr: "Vite!", en: "Quickly!" },
-                { fr: "Ne fais pas ça", en: "Don't do that" },
-                { fr: "Appelez le professeur", en: "Call the teacher" },
-                { fr: "Je suis tombée", en: "I fell down" },
-                { fr: "Ça saigne", en: "It's bleeding" },
-                { fr: "Laisse-moi tranquille", en: "Leave me alone" },
-                { fr: "C'est à moi!", en: "It's mine!" },
-                { fr: "Au secours!", en: "Help!" },
-                { fr: "Je ne trouve pas mon sac", en: "I can't find my bag" },
-                { fr: "Je suis coincée", en: "I am stuck" },
-                { fr: "J'ai soif", en: "I am thirsty" },
-                { fr: "Je veux rentrer", en: "I want to go home" }
+                { fr: "Aidez-moi!", en: "Help me!" }, { fr: "Arrête!", en: "Stop!" },
+                { fr: "J'ai mal", en: "I am hurt" }, { fr: "Je suis perdue", en: "I am lost" },
+                { fr: "Je me sens mal", en: "I feel sick" }, { fr: "Où est Maman?", en: "Where is Mom?" },
+                { fr: "J'ai besoin d'un pansement", en: "I need a bandage" }, { fr: "Attention!", en: "Watch out!" },
+                { fr: "Vite!", en: "Quickly!" }, { fr: "Ne fais pas ça", en: "Don't do that" }
             ],
             "questions": [
-                { fr: "Qu'est-ce que c'est?", en: "What is it?" },
-                { fr: "Pourquoi?", en: "Why?" },
-                { fr: "Où est...?", en: "Where is...?" },
-                { fr: "Qui est-ce?", en: "Who is it?" },
-                { fr: "Quand est-ce qu'on mange?", en: "When do we eat?" },
-                { fr: "Comment ça va?", en: "How are you?" },
-                { fr: "Quel âge as-tu?", en: "How old are you?" },
-                { fr: "Quelle heure est-il?", en: "What time is it?" },
-                { fr: "Comment dit-on...?", en: "How do you say...?" },
-                { fr: "C'est quoi ça?", en: "What's that?" },
-                { fr: "Puis-je jouer?", en: "Can I play?" },
-                { fr: "Est-ce que je peux...?", en: "Am I allowed to...?" },
-                { fr: "Où sont les toilettes?", en: "Where is the bathroom?" },
-                { fr: "As-tu un crayon?", en: "Do you have a pencil?" },
-                { fr: "C'est fini?", en: "Is it finished?" },
-                { fr: "Vrai ou faux?", en: "True or false?" },
-                { fr: "Lequel?", en: "Which one?" },
-                { fr: "Combien?", en: "How many?" },
-                { fr: "Quoi encore?", en: "What else?" },
-                { fr: "On y va?", en: "Shall we go?" }
+                { fr: "Qu'est-ce que c'est?", en: "What is it?" }, { fr: "Pourquoi?", en: "Why?" },
+                { fr: "Où est...?", en: "Where is...?" }, { fr: "Qui est-ce?", en: "Who is it?" },
+                { fr: "Comment ça va?", en: "How are you?" }
             ],
             "recess": [
-                { fr: "On joue ensemble?", en: "Shall we play together?" },
-                { fr: "C'est mon tour", en: "It's my turn" },
-                { fr: "Attrape!", en: "Catch!" },
-                { fr: "C'est amusant!", en: "It's fun!" },
-                { fr: "Cours!", en: "Run!" },
-                { fr: "Saute!", en: "Jump!" },
-                { fr: "Touche!", en: "Tag!" },
-                { fr: "Cache-toi!", en: "Hide!" },
-                { fr: "Je t'ai eu!", en: "I got you!" },
-                { fr: "On joue au ballon?", en: "Shall we play ball?" },
-                { fr: "C'est triché!", en: "That's cheating!" },
-                { fr: "Encore une fois", en: "One more time" },
-                { fr: "Regarde-moi!", en: "Look at me!" },
-                { fr: "Plus vite!", en: "Faster!" },
-                { fr: "Arrête ça", en: "Stop that" },
-                { fr: "C'est à ton tour", en: "It's your turn" },
-                { fr: "Viens ici", en: "Come here" },
-                { fr: "Attends-moi!", en: "Wait for me!" },
-                { fr: "Tu es mon ami", en: "You are my friend" },
-                { fr: "On fait une course?", en: "Shall we race?" }
+                { fr: "On joue ensemble?", en: "Shall we play together?" }, { fr: "C'est mon tour", en: "It's my turn" },
+                { fr: "Attrape!", en: "Catch!" }, { fr: "C'est amusant!", en: "It's fun!" }
             ],
             "cafeteria": [
-                { fr: "J'ai faim", en: "I'm hungry" },
-                { fr: "J'ai soif", en: "I'm thirsty" },
-                { fr: "Ma boîte à lunch", en: "My lunchbox" },
-                { fr: "C'est bon!", en: "It's good!" },
-                { fr: "Je n'aime pas ça", en: "I don't like this" },
-                { fr: "Une pomme", en: "An apple" },
-                { fr: "De l'eau, s'il vous plaît", en: "Water, please" },
-                { fr: "Du jus", en: "Some juice" },
-                { fr: "Du lait", en: "Some milk" },
-                { fr: "Un sandwich", en: "A sandwich" },
-                { fr: "Un biscuit", en: "A cookie" },
-                { fr: "J'ai fini de manger", en: "I'm done eating" },
-                { fr: "Est-ce que je peux avoir...?", en: "Can I have...?" },
-                { fr: "Une serviette, s'il vous plaît", en: "A napkin, please" },
-                { fr: "C'est chaud", en: "It's hot" },
-                { fr: "C'est froid", en: "It's cold" },
-                { fr: "Ouvre ça, s'il vous plaît", en: "Open this, please" },
-                { fr: "Merci pour le repas", en: "Thanks for the meal" },
-                { fr: "Je peux m'asseoir ici?", en: "Can I sit here?" },
-                { fr: "Passe-moi le sel", en: "Pass me the salt" }
+                { fr: "J'ai faim", en: "I'm hungry" }, { fr: "Ma boîte à lunch", en: "My lunchbox" },
+                { fr: "C'est bon!", en: "It's good!" }, { fr: "De l'eau, s'il vous plaît", en: "Water, please" }
             ],
             "colors": [
                 { fr: "Rouge", en: "Red" }, { fr: "Bleu", en: "Blue" }, { fr: "Jaune", en: "Yellow" },
-                { fr: "Vert", en: "Green" }, { fr: "Orange", en: "Orange" }, { fr: "Rose", en: "Pink" },
-                { fr: "Violet", en: "Purple" }, { fr: "Noir", en: "Black" }, { fr: "Blanc", en: "White" },
-                { fr: "Gris", en: "Grey" }, { fr: "Brun", en: "Brown" }, { fr: "Beige", en: "Beige" },
-                { fr: "Or", en: "Gold" }, { fr: "Argent", en: "Silver" }, { fr: "Clair", en: "Light" },
-                { fr: "Foncé", en: "Dark" }, { fr: "Multicolore", en: "Multicolor" },
-                { fr: "Bleu ciel", en: "Sky blue" }, { fr: "Vert lime", en: "Lime green" },
-                { fr: "Préférée", en: "Favorite" }
+                { fr: "Vert", en: "Green" }, { fr: "Orange", en: "Orange" }, { fr: "Rose", en: "Pink" }
             ],
             "numbers": [
                 { fr: "Un", en: "1" }, { fr: "Deux", en: "2" }, { fr: "Trois", en: "3" },
-                { fr: "Quatre", en: "4" }, { fr: "Cinq", en: "5" }, { fr: "Six", en: "6" },
-                { fr: "Sept", en: "7" }, { fr: "Huit", en: "8" }, { fr: "Neuf", en: "9" },
-                { fr: "Dix", en: "10" }, { fr: "Onze", en: "11" }, { fr: "Douze", en: "12" },
-                { fr: "Treize", en: "13" }, { fr: "Quatorze", en: "14" }, { fr: "Quinze", en: "15" },
-                { fr: "Seize", en: "16" }, { fr: "Dix-sept", en: "17" }, { fr: "Dix-huit", en: "18" },
-                { fr: "Dix-neuf", en: "19" }, { fr: "Vingt", en: "20" }
+                { fr: "Quatre", en: "4" }, { fr: "Cinq", en: "5" }, { fr: "Six", en: "6" }
             ],
             "supplies": [
-                { fr: "Un crayon", en: "A pencil" }, { fr: "Un stylo", en: "A pen" },
-                { fr: "Une gomme", en: "An eraser" }, { fr: "Une règle", en: "A ruler" },
-                { fr: "Un cahier", en: "A notebook" }, { fr: "Un livre", en: "A book" },
-                { fr: "Des ciseaux", en: "Scissors" }, { fr: "De la colle", en: "Glue" },
-                { fr: "Mon sac à dos", en: "My backpack" }, { fr: "Une feuille", en: "A sheet of paper" },
-                { fr: "Un marqueur", en: "A marker" }, { fr: "Des crayons de couleur", en: "Pencil crayons" },
-                { fr: "Un taille-crayon", en: "A sharpener" }, { fr: "Une calculatrice", en: "A calculator" },
-                { fr: "Mon pupitre", en: "My desk" }, { fr: "Ma chaise", en: "My chair" },
-                { fr: "Le tableau", en: "The board" }, { fr: "Une affiche", en: "A poster" },
-                { fr: "L'ordinateur", en: "The computer" }, { fr: "Une tablette", en: "A tablet" }
+                { fr: "Un crayon", en: "A pencil" }, { fr: "Une gomme", en: "An eraser" },
+                { fr: "Un cahier", en: "A notebook" }, { fr: "Mon sac à dos", en: "My backpack" }
             ],
             "greetings": [
                 { fr: "Bonjour", en: "Hello" }, { fr: "Salut", en: "Hi" },
-                { fr: "Au revoir", en: "Goodbye" }, { fr: "À demain", en: "See you tomorrow" },
-                { fr: "À plus tard", en: "See you later" }, { fr: "Bonne journée", en: "Have a good day" },
-                { fr: "Bonne nuit", en: "Good night" }, { fr: "Comment vas-tu?", en: "How are you?" },
-                { fr: "Ça va bien", en: "I'm doing well" }, { fr: "Enchantée", en: "Nice to meet you" },
-                { fr: "Bienvenue", en: "Welcome" }, { fr: "Allô?", en: "Hello (phone)?" },
-                { fr: "À tout à l'heure", en: "See you in a bit" }, { fr: "À bientôt", en: "See you soon" },
-                { fr: "Coucou!", en: "Hey!" }, { fr: "Ça va mal", en: "It's going poorly" },
-                { fr: "Comme ci, comme ça", en: "So-so" }, { fr: "Je m'appelle...", en: "My name is..." },
-                { fr: "Ravi de te voir", en: "Glad to see you" }, { fr: "Passe un bon weekend", en: "Have a good weekend" }
+                { fr: "Au revoir", en: "Goodbye" }, { fr: "À demain", en: "See you tomorrow" }
             ],
             "others": [
                 { fr: "Regarde!", en: "Look!" }, { fr: "Moi aussi", en: "Me too" },
-                { fr: "C'est cool", en: "It's cool" }, { fr: "C'est génial", en: "It's awesome" },
-                { fr: "Beau travail", en: "Good job" }, { fr: "Fais attention", en: "Be careful" },
-                { fr: "C'est difficile", en: "It's hard" }, { fr: "C'est facile", en: "It's easy" },
-                { fr: "Dépêche-toi", en: "Hurry up" }, { fr: "Attends", en: "Wait" },
-                { fr: "Une seconde", en: "One second" }, { fr: "C'est prêt", en: "It's ready" },
-                { fr: "Allons-y", en: "Let's go" }, { fr: "Mon ami", en: "My friend" },
-                { fr: "J'aime ça", en: "I like that" }, { fr: "Je n'aime pas ça", en: "I don't like that" },
-                { fr: "C'est nouveau", en: "It's new" }, { fr: "C'est vieux", en: "It's old" },
-                { fr: "Il pleut", en: "It's raining" }, { fr: "Il fait soleil", en: "It's sunny" }
+                { fr: "C'est cool", en: "It's cool" }, { fr: "C'est génial", en: "It's awesome" }
             ]
         };
 
@@ -474,15 +406,13 @@
             if (el) el.innerText = hwPhrases.length;
         }
 
-        // --- OFFLINE DETECTION ---
         window.addEventListener('online',  () => document.getElementById('offlineIndicator').classList.add('hidden'));
         window.addEventListener('offline', () => document.getElementById('offlineIndicator').classList.remove('hidden'));
         
-        // --- SERVICE WORKER REGISTRATION (IMPROVED) ---
         if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
             try {
                 const swCode = `
-                    const CACHE_NAME = 'aide-fr-v1';
+                    const CACHE_NAME = 'aide-fr-v2';
                     self.addEventListener('install', (event) => {
                         event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(['./'])));
                     });
