@@ -3,387 +3,1171 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mon Aide de Français 🇫🇷</title>
+    <title>🇫🇷 French Fun 🎉</title>
     
-    <!-- PWA / iOS Optimized Settings -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#4A6FA5">
-    <meta name="apple-mobile-web-app-title" content="Aide FR">
-    
-    <!-- Emoji Icon for PWA -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇫🇷</text></svg>">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%234A6FA5%22/><text x=%2210%22 y=%2275%22 font-size=%2270%22>🇫🇷</text></svg>">
-
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;800&display=swap" rel="stylesheet">
-    
-    <!-- Manifest for PWA Support -->
-    <link rel="manifest" id="pwa-manifest">
-
     <style>
-        :root { --primary: #4A6FA5; }
-        body { 
-            font-family: 'Lexend', sans-serif; 
-            background-color: #f8fbff; 
-            touch-action: manipulation;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
-            overscroll-behavior: none;
-        }
-        * { -webkit-touch-callout: none; }
-        .kid-card {
-            border-radius: 32px;
-            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 6px solid white;
-            box-shadow: 0 10px 0 rgba(0,0,0,0.05);
-            position: relative;
-            overflow: hidden;
-        }
-        .kid-card:active {
-            transform: scale(0.92) translateY(6px);
-            box-shadow: 0 4px 0 rgba(0,0,0,0.05);
-        }
-        @keyframes bounce-subtle {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
-        }
-        .speaking {
-            animation: bounce-subtle 0.6s infinite;
-            filter: brightness(1.05);
-            border-color: #ffd166 !important;
-        }
-        .cat-school { background: #E0F2FE; border-color: #7DD3FC; color: #0369A1; }
-        .cat-basics { background: #FEF3C7; border-color: #FCD34D; color: #92400E; }
-        .cat-feelings { background: #FCE7F3; border-color: #F9A8D4; color: #9D174D; }
-        .cat-homework { background: #DCFCE7; border-color: #86EFAC; color: #166534; }
-        .cat-urgent { background: #FFF1F2; border-color: #FECDD3; color: #BE123C; }
+        /* 1. CORE THEME: "The Toy Box" */
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         
-        .phrase-0 { background-color: #FFADAD; border-color: #FF8B8B; } 
-        .phrase-1 { background-color: #FFD6A5; border-color: #FFC47D; } 
-        .phrase-2 { background-color: #FDFFB6; border-color: #F9FC85; } 
-        .phrase-3 { background-color: #CAFFBF; border-color: #A7F396; } 
-        .phrase-4 { background-color: #9BF6FF; border-color: #6CEEFB; } 
-        .phrase-5 { background-color: #A0C4FF; border-color: #7EB0FF; } 
-        .phrase-6 { background-color: #BDB2FF; border-color: #A391FF; } 
-        .phrase-7 { background-color: #FFC6FF; border-color: #FFA3FF; } 
+        body { 
+            font-family: 'Comic Neue', 'Nunito', cursive, sans-serif; 
+            background: #FFD6E7; 
+            padding: 10px;
+            min-height: 100vh;
+        }
 
-        .back-button, .action-circle {
+        .container { 
+            max-width: 600px; 
+            margin: 0 auto; 
+            background: white; 
+            border-radius: 50px; 
+            border: 12px solid #FFD166;
+            box-shadow: 0 15px 0 rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 2. HEADER: Big and Friendly */
+        .header { 
+            background: linear-gradient(135deg, #FF6B8B 0%, #FF8E53 100%); 
+            color: white; 
+            padding: 40px 15px 30px; 
+            text-align: center;
+            border-bottom: 8px solid rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        h1 { font-size: 38px; text-shadow: 4px 4px 0 #FF8E53; margin-bottom: 5px; }
+        
+        .stats-bar {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+            background: rgba(255,255,255,0.2);
+            padding: 10px;
+            border-radius: 20px;
+        }
+        
+        .stat {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        /* 3. CATEGORY TABS: Large Emoji Targets */
+        .category-scroll {
+            display: flex;
+            gap: 20px;
+            padding: 25px 20px;
+            overflow-x: auto;
+            background: #FFF9E6;
+            scrollbar-width: none;
+        }
+
+        .preset-btn { 
+            min-width: 110px;
+            height: 110px;
+            background: white; 
+            border: 6px solid #118AB2; 
+            border-radius: 30px; 
+            font-size: 18px; 
+            font-weight: 900; 
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 0 #0D698C;
+            transition: 0.1s;
+            outline: none;
+        }
+
+        .preset-btn span { font-size: 40px; margin-bottom: 5px; }
+        .preset-btn:active, .preset-btn:focus { transform: translateY(6px); box-shadow: 0 2px 0 #0D698C; }
+        .preset-btn.active { background: #E0F7FA; border-color: #06D6A0; box-shadow: 0 8px 0 #0A9E7A; }
+
+        /* Game mode button */
+        .game-mode-btn {
+            min-width: 80px;
+            height: 80px;
+            background: #FFD166;
+            border: 6px solid #FF9E00;
+            border-radius: 25px;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 0 #FF9E00;
+            margin-left: auto;
+        }
+
+        /* 4. THE SOUND CARDS: High Contrast & Bouncy */
+        .phrases-area { 
+            padding: 25px; 
             background: white;
-            border-radius: 50px;
-            box-shadow: 0 4px 0 #e2e8f0;
-            transition: all 0.1s;
+            min-height: 400px;
         }
-        .back-button:active, .action-circle:active {
-            transform: translateY(2px);
-            box-shadow: 0 2px 0 #e2e8f0;
+        
+        .phrase-card { 
+            background: #F0F9FF; 
+            border: 8px solid #CBF3F0; 
+            border-radius: 40px; 
+            padding: 40px 20px; 
+            margin-bottom: 30px; 
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+            box-shadow: 0 12px 0 #A6E9E5;
+            transition: transform 0.2s, background 0.3s;
+            outline: none;
         }
-        textarea { border-radius: 20px; resize: none; font-size: 18px; border: 4px solid #e2e8f0; }
-        .loader {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #3498db;
-            border-radius: 50%;
-            width: 16px;
-            height: 16px;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        #installModal {
+        .phrase-card:active, .phrase-card:focus { transform: scale(0.95); }
+        
+        /* The "Talking" Animation */
+        .phrase-card.speaking { 
+            border-color: #06D6A0; 
+            background: #E8F5E9; 
+            animation: bounce 0.4s infinite alternate; 
+        }
+        
+        .phrase-card.speaking-english {
+            border-color: #9D4EDD;
+            background: #F3E5F5;
+            animation: bounce 0.4s infinite alternate;
+        }
+        
+        /* Favorite star */
+        .favorite-star {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            padding: 5px;
+            z-index: 2;
+        }
+        
+        .favorite-star.active {
+            animation: sparkle 0.8s ease-in-out;
+        }
+
+        /* English speech button */
+        .english-speech-btn {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: #9D4EDD;
+            border: 4px solid #7B2CBF;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 22px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: 0 4px 0 #7B2CBF;
+            transition: all 0.2s;
+            z-index: 2;
+        }
+        
+        .english-speech-btn:active {
+            transform: scale(0.9);
+            box-shadow: 0 2px 0 #7B2CBF;
+        }
+
+        /* Practice stars */
+        .practice-stars {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            font-size: 18px;
+            color: #FFD166;
+        }
+
+        .french-text { 
+            font-size: 42px; 
+            color: #073B4C; 
+            font-weight: 900; 
+            margin-bottom: 15px; 
+            padding: 0 20px;
+        }
+        
+        .english-text { 
+            font-size: 22px; 
+            color: #118AB2; 
+            font-style: italic; 
+            font-weight: 700; 
+            opacity: 0.7;
+            min-height: 28px;
+            margin-bottom: 15px;
+        }
+        
+        /* Language indicator */
+        .language-indicator {
+            display: inline-block;
+            padding: 5px 15px;
+            background: #FFD166;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #073B4C;
+            margin-top: 5px;
+        }
+        
+        /* Quiz mode styles */
+        .quiz-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .quiz-option {
+            background: #FFE5EC;
+            border: 6px solid #FF9EBC;
+            border-radius: 30px;
+            padding: 25px 10px;
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 8px 0 #FF7BA3;
+            transition: all 0.2s;
+        }
+        
+        .quiz-option.correct {
+            background: #C8E6C9;
+            border-color: #06D6A0;
+        }
+        
+        .quiz-option.wrong {
+            background: #FFCDD2;
+            border-color: #EF476F;
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-10px); }
+        }
+        
+        @keyframes celebrate {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes sparkle {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.5) rotate(20deg); }
+            100% { transform: scale(1); }
+        }
+
+        /* 5. SETTINGS: Hidden for Safety */
+        .teacher-section {
+            margin-top: auto;
+            background: #f1f1f1;
+            border-top: 4px solid #ddd;
+        }
+
+        summary { 
+            padding: 20px; 
+            text-align: center; 
+            font-weight: bold; 
+            cursor: pointer; 
+            color: #aaa; 
+            list-style: none;
+        }
+        
+        .admin-box { padding: 20px; }
+        
+        textarea { 
+            width: 100%; 
+            height: 120px; 
+            padding: 15px; 
+            font-size: 16px;
+            border: 4px solid #FFD166; 
+            border-radius: 20px; 
+            margin-bottom: 15px;
+            font-family: inherit;
+        }
+        
+        select {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            border: 4px solid #118AB2;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            font-family: inherit;
+        }
+        
+        .speed-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .speed-control label {
+            font-weight: bold;
+            min-width: 120px;
+        }
+        
+        .speed-control input {
+            flex: 1;
+            height: 20px;
+        }
+
+        .admin-buttons { 
+            display: flex; 
+            gap: 10px; 
+            flex-wrap: wrap; 
+        }
+        
+        .admin-buttons button { 
+            flex: 1; 
+            padding: 15px; 
+            border-radius: 15px; 
+            border: none; 
+            color: white; 
+            font-weight: bold; 
+            font-size: 16px; 
+            cursor: pointer;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+            min-width: 140px;
+        }
+
+        .save-btn { background: #06D6A0; }
+        .clear-btn { background: #EF476F; }
+        .install-btn { background: #9D4EDD; width: 100%; margin-top: 10px; }
+        
+        .quiz-btn { background: #FF9E00; }
+        .stats-btn { background: #118AB2; }
+        
+        /* Modal for stats */
+        .modal {
             display: none;
             position: fixed;
-            inset: 0;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: rgba(0,0,0,0.5);
             z-index: 1000;
             align-items: center;
             justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 40px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 12px solid #FFD166;
+        }
+        
+        .close-modal {
+            float: right;
+            font-size: 28px;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-box {
+            background: #F0F9FF;
+            border-radius: 20px;
             padding: 20px;
+            text-align: center;
         }
-
-        @keyframes pulse-ring {
-            0% { transform: scale(0.8); opacity: 0.5; }
-            100% { transform: scale(1.3); opacity: 0; }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #118AB2;
         }
-        .install-alert::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border: 4px solid #3b82f6;
-            border-radius: 50px;
-            animation: pulse-ring 1.5s infinite;
+        
+        .stat-label {
+            font-size: 14px;
+            color: #666;
         }
     </style>
 </head>
-<body class="pb-24">
-    <div id="offlineIndicator" class="hidden fixed top-0 w-full bg-red-100 text-red-700 p-2 text-center text-xs font-bold z-[100]">
-        ⚠️ Mode Hors-ligne (AI désactivée)
-    </div>
+<body>
 
-    <header class="p-6 text-center sticky top-0 bg-[#f8fbff]/90 backdrop-blur-md z-50">
-        <div id="headerNav" class="flex justify-between items-center max-w-md mx-auto gap-2">
-            <button id="backBtn" onclick="showView('categories')" class="hidden back-button px-5 py-2 font-black text-blue-600 flex items-center gap-2">
-                <span class="text-xl">🏠</span>
-            </button>
-            <h1 class="text-2xl font-black flex-1 text-blue-900 text-left truncate" onclick="location.reload()">
-                <span class="text-blue-500">Maman,</span> <span class="text-red-500">Aide-moi!</span>
-            </h1>
-            <div class="flex gap-2">
-                <button id="installBtn" onclick="handleInstallClick()" class="hidden action-circle w-12 h-12 flex items-center justify-center text-xl relative install-alert" title="Installer">📥</button>
-                <button onclick="shareApp()" class="action-circle w-12 h-12 flex items-center justify-center text-xl">📤</button>
-            </div>
-        </div>
-    </header>
-
-    <!-- Manual Install Info Modal -->
-    <div id="installModal" onclick="this.style.display='none'">
-        <div class="bg-white p-8 rounded-[32px] max-w-sm w-full text-center shadow-2xl" onclick="event.stopPropagation()">
-            <div class="text-5xl mb-4">📲</div>
-            <h2 class="text-2xl font-black mb-4">Installer l'app</h2>
-            <p class="text-gray-600 mb-6 font-bold leading-relaxed">
-                Appuie sur les <span class="text-blue-600">trois points (⋮)</span> dans le menu de Chrome, puis choisis <br>
-                <span class="bg-blue-100 px-2 py-1 rounded">"Installer l'application"</span>.
-            </p>
-            <button onclick="document.getElementById('installModal').style.display='none'" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-black">Compris !</button>
+<div class="container">
+    <div class="header">
+        <h1>🇫🇷 French Fun 🎉</h1>
+        <p id="status">Tap a category to start!</p>
+        <div class="stats-bar">
+            <div class="stat">🎯 <span id="totalPractices">0</span> practices</div>
+            <div class="stat">⭐ <span id="totalFavorites">0</span> favorites</div>
+            <div class="stat">🏆 <span id="quizScore">0</span> correct</div>
         </div>
     </div>
 
-    <main class="max-w-md mx-auto px-4">
-        <div id="categoriesView" class="grid grid-cols-2 gap-4">
-            <div onclick="showView('homework')" class="col-span-2 kid-card cat-homework p-6 flex items-center justify-between cursor-pointer">
-                <div class="flex items-center gap-4">
-                    <span class="text-5xl">📝</span>
-                    <div>
-                        <h2 class="text-2xl font-black">Devoirs</h2>
-                        <p class="text-xs opacity-80 font-bold uppercase tracking-widest">Homework List</p>
-                    </div>
-                </div>
-                <span id="hwCount" class="bg-white/60 px-4 py-2 rounded-full text-xs font-black">0</span>
+    <div class="category-scroll" id="categories">
+        <!-- Categories will be added by JavaScript -->
+    </div>
+
+    <div class="phrases-area" id="phrases">
+        <!-- Phrases will be added by JavaScript -->
+    </div>
+
+    <details class="teacher-section">
+        <summary>⚙️ Parent/Teacher Settings</summary>
+        <div class="admin-box">
+            <textarea id="bulk-input" placeholder="Type French phrases here, one per line..."></textarea>
+            
+            <select id="voiceSelect">
+                <option value="">Default French Voice</option>
+            </select>
+            
+            <select id="englishVoiceSelect">
+                <option value="">Default English Voice</option>
+            </select>
+            
+            <div class="speed-control">
+                <label for="speechSpeed">Speech Speed:</label>
+                <input type="range" id="speechSpeed" min="0.5" max="1.5" step="0.1" value="0.75">
+                <span id="speedValue">0.75</span>
             </div>
-            <!-- All Categories -->
-            <div onclick="showView('school')" class="kid-card cat-school p-6 text-center cursor-pointer"><div class="text-4xl mb-2">🏫</div><h2 class="font-black text-sm">School</h2></div>
-            <div onclick="showView('basics')" class="kid-card cat-basics p-6 text-center cursor-pointer"><div class="text-4xl mb-2">✨</div><h2 class="font-black text-sm">Yes/No</h2></div>
-            <div onclick="showView('feelings')" class="kid-card cat-feelings p-6 text-center cursor-pointer"><div class="text-4xl mb-2">😊</div><h2 class="font-black text-sm">Feelings</h2></div>
-            <div onclick="showView('urgent')" class="kid-card cat-urgent p-6 text-center cursor-pointer"><div class="text-4xl mb-2">🚨</div><h2 class="font-black text-sm">Help!</h2></div>
-            <div onclick="showView('recess')" class="kid-card bg-orange-100 border-orange-300 p-6 text-center cursor-pointer"><div class="text-4xl mb-2">🏃</div><h2 class="font-black text-sm text-orange-800">Recess</h2></div>
-            <div onclick="showView('cafeteria')" class="kid-card bg-gray-100 border-gray-400 p-6 text-center cursor-pointer"><div class="text-4xl mb-2">🍕</div><h2 class="font-black text-sm text-gray-800">Lunch</h2></div>
-            <div onclick="showView('colors')" class="kid-card bg-pink-100 border-pink-300 p-6 text-center cursor-pointer"><div class="text-4xl mb-2">🎨</div><h2 class="font-black text-sm text-pink-800">Colors</h2></div>
-            <div onclick="showView('numbers')" class="kid-card bg-purple-100 border-purple-300 p-6 text-center cursor-pointer"><div class="text-4xl mb-2">🔢</div><h2 class="font-black text-sm text-purple-800">Numbers</h2></div>
-            <div onclick="showView('supplies')" class="kid-card bg-emerald-100 border-emerald-300 p-6 text-center cursor-pointer"><div class="text-4xl mb-2">✏️</div><h2 class="font-black text-sm text-emerald-800">Tools</h2></div>
-            <div onclick="showView('greetings')" class="kid-card bg-cyan-100 border-cyan-300 p-6 text-center cursor-pointer"><div class="text-4xl mb-2">👋</div><h2 class="font-black text-sm text-cyan-800">Hello</h2></div>
-            <div onclick="showView('questions')" class="kid-card bg-indigo-100 border-indigo-300 p-6 text-center cursor-pointer"><div class="text-4xl mb-2">❓</div><h2 class="font-black text-sm text-indigo-800">Ask</h2></div>
-            <div onclick="showView('others')" class="kid-card bg-slate-200 border-slate-400 p-6 text-center cursor-pointer"><div class="text-4xl mb-2">🌟</div><h2 class="font-black text-sm text-slate-800">More</h2></div>
-        </div>
-
-        <div id="phrasesView" class="hidden space-y-6">
-            <div id="homeworkControls" class="hidden mb-6 bg-white p-6 rounded-[40px] border-4 border-dashed border-green-300">
-                <h3 class="font-black text-green-600 mb-3 flex items-center gap-2"><span>👩‍🏫</span> Parent: Add homework words</h3>
-                <textarea id="hwInput" class="w-full h-32 p-4 bg-green-50 outline-none font-bold text-green-800" placeholder="Ex: Chien | Dog"></textarea>
-                <button id="saveHwBtn" onclick="saveHW()" class="w-full mt-4 bg-green-500 text-white font-black py-5 rounded-[25px] shadow-lg active:scale-95 transition-all text-xl">Save to Phone</button>
+            
+            <div class="admin-buttons">
+                <button class="save-btn" onclick="saveAll()">💾 Save Changes</button>
+                <button class="clear-btn" onclick="clearAll()">🗑️ Clear All</button>
+                <button class="quiz-btn" onclick="startQuiz()">🎮 Start Quiz</button>
+                <button class="stats-btn" onclick="showStats()">📊 View Stats</button>
+                <button class="install-btn" id="installBtn" style="display:none">📲 Install on Home Screen</button>
             </div>
-            <div id="phraseList" class="space-y-6 pb-20"></div>
         </div>
-    </main>
+    </details>
+</div>
 
-    <script>
-        const apiKey = ""; 
+<!-- Stats Modal -->
+<div class="modal" id="statsModal">
+    <div class="modal-content">
+        <button class="close-modal" onclick="closeStats()">×</button>
+        <h2>📊 Learning Statistics</h2>
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-value" id="statTotalPhrases">0</div>
+                <div class="stat-label">Total Phrases</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="statPracticeSessions">0</div>
+                <div class="stat-label">Practice Sessions</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="statFavorites">0</div>
+                <div class="stat-label">Favorites</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="statQuizCorrect">0</div>
+                <div class="stat-label">Quiz Correct</div>
+            </div>
+        </div>
+        <h3>Top Practiced Phrases</h3>
+        <div id="topPhrasesList"></div>
+    </div>
+</div>
 
-        // --- PWA SETUP ---
-        const manifest = {
-            "name": "Mon Aide de Français",
-            "short_name": "Aide FR",
-            "start_url": window.location.href,
-            "display": "standalone",
-            "background_color": "#f8fbff",
-            "theme_color": "#4A6FA5",
-            "icons": [{
-                "src": "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%234A6FA5%22/><text x=%2210%22 y=%2275%22 font-size=%2270%22>🇫🇷</text></svg>",
-                "sizes": "192x192",
-                "type": "image/svg+xml",
-                "purpose": "any"
-            }]
+<script>
+    // ========== ENHANCED DATA SETS ==========
+    const sets = {
+        '👋': 'Bonjour\nSalut\nMerci\nAu revoir\nS\'il vous plaît\nDe rien',
+        '🍕': 'La pizza\nLa pomme\nLa banane\nLe lait\nLe fromage\nL\'eau',
+        '🐶': 'Le chien\nLe chat\nLe lapin\nLe cheval\nL\'oiseau\nLe poisson',
+        '🎨': 'Rouge\nBleu\nVert\nJaune\nRose\nNoir\nBlanc',
+        '🔟': 'Un\nDeux\nTrois\nQuatre\nCinq\nSix\nSept\nHuit\nNeuf\nDix',
+        '🏫': 'L\'école\nLe livre\nLe crayon\nLa chaise\nLa table\nLe professeur',
+        '👕': 'Le pantalon\nLa chemise\nLa robe\nLes chaussures\nLe chapeau',
+        '🚗': 'La voiture\nLe vélo\nLe train\nL\'avion\nLe bus\nLe bateau'
+    };
+
+    // ========== STATE MANAGEMENT ==========
+    const state = {
+        progress: JSON.parse(localStorage.getItem('french_progress') || '{}'),
+        englishProgress: JSON.parse(localStorage.getItem('english_progress') || '{}'),
+        favorites: JSON.parse(localStorage.getItem('french_favorites') || '{}'),
+        quizScore: parseInt(localStorage.getItem('french_quiz_score') || '0'),
+        currentVoice: localStorage.getItem('french_voice') || '',
+        currentEnglishVoice: localStorage.getItem('english_voice') || '',
+        speechSpeed: parseFloat(localStorage.getItem('speech_speed') || '0.75'),
+        isQuizMode: false,
+        quizQuestion: null,
+        quizOptions: []
+    };
+
+    const phrasesDiv = document.getElementById('phrases');
+    const input = document.getElementById('bulk-input');
+    let currentPhrases = [];
+    let currentTranslations = {};
+
+    // ========== INITIALIZATION ==========
+    window.onload = () => {
+        // Build category buttons
+        const catDiv = document.getElementById('categories');
+        Object.keys(sets).forEach(emoji => {
+            const btn = document.createElement('button');
+            btn.className = 'preset-btn';
+            btn.innerHTML = `<span>${emoji}</span>`;
+            btn.setAttribute('aria-label', `${emoji} category`);
+            btn.onclick = () => {
+                document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                state.isQuizMode = false;
+                loadCategory(emoji);
+            };
+            catDiv.appendChild(btn);
+        });
+
+        // Add game mode button
+        const gameBtn = document.createElement('button');
+        gameBtn.className = 'game-mode-btn';
+        gameBtn.innerHTML = '🎮';
+        gameBtn.title = 'Start Quiz Game';
+        gameBtn.onclick = startQuiz;
+        catDiv.appendChild(gameBtn);
+
+        // Load saved data or default
+        const saved = localStorage.getItem('kid_french_v2');
+        if (saved) {
+            input.value = saved;
+            renderCards(saved);
+        } else {
+            loadCategory('👋');
+        }
+
+        // Load voices
+        loadVoices();
+        
+        // Setup speech speed control
+        const speedControl = document.getElementById('speechSpeed');
+        speedControl.value = state.speechSpeed;
+        document.getElementById('speedValue').textContent = state.speechSpeed;
+        
+        speedControl.oninput = (e) => {
+            state.speechSpeed = parseFloat(e.target.value);
+            document.getElementById('speedValue').textContent = state.speechSpeed;
+            localStorage.setItem('speech_speed', state.speechSpeed);
         };
-        document.getElementById('pwa-manifest').setAttribute('href', 'data:application/manifest+json,' + JSON.stringify(manifest));
+        
+        // Update stats display
+        updateStatsBar();
+        
+        // Add sound effects setup
+        setupSoundEffects();
+    };
 
-        // --- SERVICE WORKER FIX ---
-        // Browser environments often block blob-based Service Workers for security.
-        // We will only attempt to register if it's not a restricted environment.
-        if ('serviceWorker' in navigator && !window.location.protocol.startsWith('blob')) {
-            window.addEventListener('load', () => {
-                const script = `self.addEventListener('fetch', (e) => {});`;
-                const blob = new Blob([script], { type: 'text/javascript' });
-                const url = URL.createObjectURL(blob);
-                navigator.serviceWorker.register(url, { scope: '/' }).catch(err => {
-                    console.log("Service Worker registration skipped or failed in this environment.");
-                });
+    // ========== VOICE MANAGEMENT ==========
+    function loadVoices() {
+        const voiceSelect = document.getElementById('voiceSelect');
+        const englishVoiceSelect = document.getElementById('englishVoiceSelect');
+        
+        voiceSelect.innerHTML = '<option value="">Default French Voice</option>';
+        englishVoiceSelect.innerHTML = '<option value="">Default English Voice</option>';
+        
+        // Populate when voices are loaded
+        speechSynthesis.onvoiceschanged = () => {
+            const voices = speechSynthesis.getVoices();
+            
+            // French voices
+            const frenchVoices = voices.filter(v => v.lang.startsWith('fr'));
+            frenchVoices.forEach(voice => {
+                const option = document.createElement('option');
+                option.value = voice.name;
+                option.textContent = `${voice.name} (${voice.lang})`;
+                if (voice.name === state.currentVoice) {
+                    option.selected = true;
+                }
+                voiceSelect.appendChild(option);
+            });
+            
+            // English voices
+            const englishVoices = voices.filter(v => v.lang.startsWith('en'));
+            englishVoices.forEach(voice => {
+                const option = document.createElement('option');
+                option.value = voice.name;
+                option.textContent = `${voice.name} (${voice.lang})`;
+                if (voice.name === state.currentEnglishVoice) {
+                    option.selected = true;
+                }
+                englishVoiceSelect.appendChild(option);
+            });
+        };
+        
+        // Trigger voices loading
+        speechSynthesis.getVoices();
+        
+        voiceSelect.onchange = (e) => {
+            state.currentVoice = e.target.value;
+            localStorage.setItem('french_voice', state.currentVoice);
+        };
+        
+        englishVoiceSelect.onchange = (e) => {
+            state.currentEnglishVoice = e.target.value;
+            localStorage.setItem('english_voice', state.currentEnglishVoice);
+        };
+    }
+
+    // ========== SOUND EFFECTS ==========
+    function setupSoundEffects() {
+        // Create audio context for sound effects
+        window.AudioContext = window.AudioContext || window.webkitAudioContext;
+    }
+
+    function playSound(type) {
+        try {
+            // Simple beep sounds using Web Audio API
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            switch(type) {
+                case 'tap':
+                    oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                    break;
+                case 'correct':
+                    oscillator.frequency.setValueAtTime(1000, audioContext.currentTime);
+                    break;
+                case 'wrong':
+                    oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+                    break;
+                case 'favorite':
+                    // Sparkle sound
+                    oscillator.frequency.setValueAtTime(1200, audioContext.currentTime);
+                    break;
+                case 'english':
+                    // English speech sound
+                    oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
+                    break;
+            }
+            
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+            
+            oscillator.start();
+            oscillator.stop(audioContext.currentTime + 0.3);
+        } catch (e) {
+            console.log("Sound effect error:", e);
+        }
+    }
+
+    // ========== CORE FUNCTIONS ==========
+    function loadCategory(key) {
+        input.value = sets[key];
+        saveAll();
+        document.getElementById('status').textContent = `Learning: ${key} words`;
+    }
+
+    function saveAll() {
+        localStorage.setItem('kid_french_v2', input.value);
+        renderCards(input.value);
+        updateStatsBar();
+    }
+
+    function clearAll() {
+        if(confirm("Erase all words and reset learning?")) {
+            input.value = '';
+            saveAll();
+            // Clear progress too if wanted
+            if(confirm("Also clear learning progress?")) {
+                localStorage.removeItem('french_progress');
+                localStorage.removeItem('english_progress');
+                localStorage.removeItem('french_favorites');
+                localStorage.removeItem('french_quiz_score');
+                state.progress = {};
+                state.englishProgress = {};
+                state.favorites = {};
+                state.quizScore = 0;
+                updateStatsBar();
+            }
+        }
+    }
+
+    // ========== CARD RENDERING ==========
+    function renderCards(text) {
+        phrasesDiv.innerHTML = '';
+        currentPhrases = text.split('\n').filter(l => l.trim() !== '');
+        
+        if (state.isQuizMode && currentPhrases.length >= 4) {
+            generateQuiz();
+            return;
+        }
+        
+        currentPhrases.forEach((line, index) => {
+            const card = createPhraseCard(line, index);
+            phrasesDiv.appendChild(card);
+        });
+        
+        updateStatsBar();
+    }
+
+    function createPhraseCard(frenchPhrase, index) {
+        const card = document.createElement('div');
+        card.className = 'phrase-card';
+        card.tabIndex = 0;
+        card.setAttribute('role', 'button');
+        card.setAttribute('aria-label', `French phrase: ${frenchPhrase}`);
+        
+        // English speech button (purple speaker icon)
+        const englishBtn = document.createElement('button');
+        englishBtn.className = 'english-speech-btn';
+        englishBtn.innerHTML = '🔊';
+        englishBtn.title = 'Hear English translation';
+        englishBtn.setAttribute('aria-label', 'Hear English translation');
+        englishBtn.onclick = async (e) => {
+            e.stopPropagation();
+            playSound('english');
+            const translation = await getTranslation(frenchPhrase);
+            if (translation) {
+                trackEnglishPractice(frenchPhrase);
+                speakEnglish(translation, card);
+            }
+        };
+        
+        // Create star for favorites
+        const starBtn = document.createElement('button');
+        starBtn.className = 'favorite-star';
+        starBtn.innerHTML = state.favorites[frenchPhrase] ? '⭐' : '☆';
+        starBtn.title = state.favorites[frenchPhrase] ? 'Remove from favorites' : 'Add to favorites';
+        starBtn.setAttribute('aria-label', state.favorites[frenchPhrase] ? 'Remove from favorites' : 'Add to favorites');
+        starBtn.onclick = (e) => {
+            e.stopPropagation();
+            toggleFavorite(frenchPhrase, starBtn);
+        };
+        
+        // Practice stars (French practice)
+        const practiceCount = state.progress[frenchPhrase] || 0;
+        const starsDiv = document.createElement('div');
+        starsDiv.className = 'practice-stars';
+        starsDiv.innerHTML = '🇫🇷 ' + '★'.repeat(Math.min(practiceCount, 3));
+        
+        // English practice indicator
+        const englishPracticeCount = state.englishProgress[frenchPhrase] || 0;
+        const englishStarsDiv = document.createElement('div');
+        englishStarsDiv.className = 'practice-stars';
+        englishStarsDiv.style.left = 'auto';
+        englishStarsDiv.style.right = '15px';
+        englishStarsDiv.innerHTML = '🇬🇧 ' + '★'.repeat(Math.min(englishPracticeCount, 3));
+        
+        // Main content
+        const frenchDiv = document.createElement('div');
+        frenchDiv.className = 'french-text';
+        frenchDiv.textContent = frenchPhrase;
+        
+        const englishDiv = document.createElement('div');
+        englishDiv.className = 'english-text';
+        englishDiv.textContent = 'Loading translation...';
+        
+        // Language indicator
+        const langIndicator = document.createElement('div');
+        langIndicator.className = 'language-indicator';
+        langIndicator.textContent = 'French → English';
+        
+        card.appendChild(englishBtn);
+        card.appendChild(starBtn);
+        card.appendChild(starsDiv);
+        card.appendChild(englishStarsDiv);
+        card.appendChild(frenchDiv);
+        card.appendChild(englishDiv);
+        card.appendChild(langIndicator);
+        
+        // Fetch and display translation
+        fetchTranslation(frenchPhrase, englishDiv);
+        
+        // Click handler for French speech
+        card.onclick = () => {
+            playSound('tap');
+            trackPractice(frenchPhrase);
+            updatePracticeStars(starsDiv, frenchPhrase);
+            speakFrench(frenchPhrase, card);
+        };
+        
+        // Keyboard support
+        card.onkeypress = (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                card.onclick();
+            }
+        };
+        
+        return card;
+    }
+
+    // ========== TRANSLATION FUNCTIONS ==========
+    async function fetchTranslation(frenchText, element) {
+        try {
+            const translation = await getTranslation(frenchText);
+            element.textContent = translation || "Tap to hear translation";
+        } catch {
+            element.textContent = "Tap to hear translation";
+        }
+    }
+
+    async function getTranslation(frenchText) {
+        // Check cache first
+        const cache = JSON.parse(localStorage.getItem('translation_cache') || '{}');
+        if (cache[frenchText]) {
+            return cache[frenchText];
+        }
+        
+        try {
+            const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(frenchText)}&langpair=fr|en`);
+            const data = await res.json();
+            const translation = data.responseData.translatedText;
+            
+            // Cache translation
+            cache[frenchText] = translation;
+            localStorage.setItem('translation_cache', JSON.stringify(cache));
+            currentTranslations[frenchText] = translation;
+            
+            return translation;
+        } catch {
+            return null;
+        }
+    }
+
+    // ========== PROGRESS TRACKING ==========
+    function trackPractice(phrase) {
+        state.progress[phrase] = (state.progress[phrase] || 0) + 1;
+        localStorage.setItem('french_progress', JSON.stringify(state.progress));
+        updateStatsBar();
+    }
+
+    function trackEnglishPractice(phrase) {
+        state.englishProgress[phrase] = (state.englishProgress[phrase] || 0) + 1;
+        localStorage.setItem('english_progress', JSON.stringify(state.englishProgress));
+        updateStatsBar();
+    }
+
+    function updatePracticeStars(starsDiv, phrase) {
+        const practiceCount = state.progress[phrase] || 0;
+        starsDiv.innerHTML = '🇫🇷 ' + '★'.repeat(Math.min(practiceCount, 3));
+    }
+
+    function toggleFavorite(phrase, starBtn) {
+        playSound('favorite');
+        
+        if (state.favorites[phrase]) {
+            delete state.favorites[phrase];
+            starBtn.innerHTML = '☆';
+            starBtn.title = 'Add to favorites';
+            starBtn.setAttribute('aria-label', 'Add to favorites');
+        } else {
+            state.favorites[phrase] = true;
+            starBtn.innerHTML = '⭐';
+            starBtn.title = 'Remove from favorites';
+            starBtn.setAttribute('aria-label', 'Remove from favorites');
+            starBtn.classList.add('active');
+            setTimeout(() => starBtn.classList.remove('active'), 800);
+        }
+        
+        localStorage.setItem('french_favorites', JSON.stringify(state.favorites));
+        updateStatsBar();
+    }
+
+    // ========== SPEECH SYNTHESIS ==========
+    function speakFrench(text, card) {
+        if (!('speechSynthesis' in window)) {
+            alert("Speech synthesis not supported on this device");
+            return;
+        }
+        
+        window.speechSynthesis.cancel();
+        
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'fr-FR';
+        utterance.rate = state.speechSpeed;
+        
+        // Remove any existing speaking classes
+        card.classList.remove('speaking', 'speaking-english');
+        
+        // Use selected voice if available
+        if (state.currentVoice) {
+            const voices = speechSynthesis.getVoices();
+            const selectedVoice = voices.find(v => v.name === state.currentVoice);
+            if (selectedVoice) utterance.voice = selectedVoice;
+        }
+        
+        utterance.onstart = () => {
+            card.classList.add('speaking');
+            document.getElementById('status').textContent = `Speaking French: ${text}`;
+        };
+        
+        utterance.onend = () => {
+            card.classList.remove('speaking');
+            document.getElementById('status').textContent = 'Tap to learn more!';
+        };
+        
+        window.speechSynthesis.speak(utterance);
+    }
+
+    function speakEnglish(text, card) {
+        if (!('speechSynthesis' in window)) {
+            alert("Speech synthesis not supported on this device");
+            return;
+        }
+        
+        window.speechSynthesis.cancel();
+        
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        utterance.rate = state.speechSpeed;
+        
+        // Remove any existing speaking classes
+        card.classList.remove('speaking', 'speaking-english');
+        
+        // Use selected English voice if available
+        if (state.currentEnglishVoice) {
+            const voices = speechSynthesis.getVoices();
+            const selectedVoice = voices.find(v => v.name === state.currentEnglishVoice);
+            if (selectedVoice) utterance.voice = selectedVoice;
+        }
+        
+        utterance.onstart = () => {
+            card.classList.add('speaking-english');
+            document.getElementById('status').textContent = `Speaking English: ${text}`;
+        };
+        
+        utterance.onend = () => {
+            card.classList.remove('speaking-english');
+            document.getElementById('status').textContent = 'Tap to learn more!';
+        };
+        
+        window.speechSynthesis.speak(utterance);
+    }
+
+    // ========== QUIZ MODE ==========
+    function startQuiz() {
+        if (currentPhrases.length < 4) {
+            alert("Need at least 4 phrases for a quiz!");
+            return;
+        }
+        
+        state.isQuizMode = true;
+        document.getElementById('status').textContent = "🎮 Quiz Mode - Choose the correct translation!";
+        
+        // Add quiz button highlight
+        document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+        
+        generateQuiz();
+    }
+
+    function generateQuiz() {
+        phrasesDiv.innerHTML = '';
+        
+        // Pick a random phrase
+        const correctIndex = Math.floor(Math.random() * currentPhrases.length);
+        const correctPhrase = currentPhrases[correctIndex];
+        
+        state.quizQuestion = correctPhrase;
+        
+        // Get translation for correct answer
+        const cache = JSON.parse(localStorage.getItem('translation_cache') || '{}');
+        let correctTranslation = cache[correctPhrase];
+        
+        // If no cached translation, use placeholder
+        if (!correctTranslation) {
+            correctTranslation = "???";
+            // Fetch it in background
+            getTranslation(correctPhrase);
+        }
+        
+        // Create question card
+        const questionCard = document.createElement('div');
+        questionCard.className = 'phrase-card';
+        questionCard.style.cursor = 'default';
+        questionCard.innerHTML = `
+            <div class="french-text" style="color: #FF6B8B;">${correctPhrase}</div>
+            <div class="english-text">What does this mean?</div>
+            <button class="english-speech-btn" onclick="speakQuizQuestion('${correctPhrase.replace(/'/g, "\\'")}')" style="position:relative; margin:10px auto;">🔊 Hear Question</button>
+        `;
+        phrasesDiv.appendChild(questionCard);
+        
+        // Generate options (1 correct + 3 random)
+        state.quizOptions = [correctTranslation];
+        
+        while (state.quizOptions.length < 4) {
+            const randomIndex = Math.floor(Math.random() * currentPhrases.length);
+            if (randomIndex === correctIndex) continue;
+            
+            const wrongPhrase = currentPhrases[randomIndex];
+            const wrongTranslation = cache[wrongPhrase] || "???";
+            
+            if (!state.quizOptions.includes(wrongTranslation)) {
+                state.quizOptions.push(wrongTranslation);
+            }
+        }
+        
+        // Shuffle options
+        state.quizOptions = state.quizOptions.sort(() => Math.random() - 0.5);
+        
+        // Display options
+        const optionsDiv = document.createElement('div');
+        optionsDiv.className = 'quiz-options';
+        
+        state.quizOptions.forEach(option => {
+            const optionBtn = document.createElement('div');
+            optionBtn.className = 'quiz-option';
+            optionBtn.textContent = option;
+            optionBtn.onclick = () => checkQuizAnswer(option === correctTranslation, optionBtn, correctTranslation);
+            optionsDiv.appendChild(optionBtn);
+        });
+        
+        phrasesDiv.appendChild(optionsDiv);
+    }
+
+    function speakQuizQuestion(phrase) {
+        speakFrench(phrase, document.querySelector('.phrase-card'));
+    }
+
+    function checkQuizAnswer(isCorrect, button, correctAnswer) {
+        playSound(isCorrect ? 'correct' : 'wrong');
+        
+        if (isCorrect) {
+            button.classList.add('correct');
+            state.quizScore++;
+            localStorage.setItem('french_quiz_score', state.quizScore);
+            updateStatsBar();
+            
+            document.getElementById('status').textContent = "🎉 Correct! Well done!";
+            
+            setTimeout(() => {
+                state.isQuizMode = false;
+                saveAll(); // Reload normal cards
+            }, 1500);
+        } else {
+            button.classList.add('wrong');
+            document.getElementById('status').textContent = `Try again! Correct is: ${correctAnswer}`;
+            
+            // Highlight correct answer
+            document.querySelectorAll('.quiz-option').forEach(opt => {
+                if (opt.textContent === correctAnswer) {
+                    opt.classList.add('correct');
+                }
+            });
+            
+            setTimeout(() => {
+                generateQuiz(); // New question
+            }, 2000);
+        }
+    }
+
+    // ========== STATISTICS ==========
+    function updateStatsBar() {
+        const totalPractices = Object.values(state.progress).reduce((a, b) => a + b, 0) +
+                              Object.values(state.englishProgress).reduce((a, b) => a + b, 0);
+        const totalFavorites = Object.keys(state.favorites).length;
+        
+        document.getElementById('totalPractices').textContent = totalPractices;
+        document.getElementById('totalFavorites').textContent = totalFavorites;
+        document.getElementById('quizScore').textContent = state.quizScore;
+    }
+
+    function showStats() {
+        const modal = document.getElementById('statsModal');
+        modal.style.display = 'flex';
+        
+        // Calculate stats
+        const totalPhrases = currentPhrases.length;
+        const frenchPractice = Object.values(state.progress).reduce((a, b) => a + b, 0);
+        const englishPractice = Object.values(state.englishProgress).reduce((a, b) => a + b, 0);
+        const practiceSessions = frenchPractice + englishPractice;
+        const favorites = Object.keys(state.favorites).length;
+        
+        document.getElementById('statTotalPhrases').textContent = totalPhrases;
+        document.getElementById('statPracticeSessions').textContent = practiceSessions;
+        document.getElementById('statFavorites').textContent = favorites;
+        document.getElementById('statQuizCorrect').textContent = state.quizScore;
+        
+        // Show top phrases
+        const combinedProgress = {};
+        Object.keys(state.progress).forEach(phrase => {
+            combinedProgress[phrase] = (combinedProgress[phrase] || 0) + state.progress[phrase];
+        });
+        Object.keys(state.englishProgress).forEach(phrase => {
+            combinedProgress[phrase] = (combinedProgress[phrase] || 0) + state.englishProgress[phrase];
+        });
+        
+        const topPhrases = Object.entries(combinedProgress)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 5);
+        
+        const topPhrasesList = document.getElementById('topPhrasesList');
+        topPhrasesList.innerHTML = '';
+        
+        if (topPhrases.length === 0) {
+            topPhrasesList.innerHTML = '<p>No practice data yet. Start learning!</p>';
+        } else {
+            topPhrases.forEach(([phrase, count]) => {
+                const frenchCount = state.progress[phrase] || 0;
+                const englishCount = state.englishProgress[phrase] || 0;
+                const div = document.createElement('div');
+                div.style.cssText = 'background: #F0F9FF; padding: 10px; margin: 5px 0; border-radius: 10px;';
+                div.innerHTML = `<strong>${phrase}</strong>: ${count} total (🇫🇷 ${frenchCount} / 🇬🇧 ${englishCount})`;
+                topPhrasesList.appendChild(div);
             });
         }
+    }
 
-        let deferredPrompt;
-        const installBtn = document.getElementById('installBtn');
-        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-        
-        if (!isStandalone) {
-            installBtn.classList.remove('hidden');
+    function closeStats() {
+        document.getElementById('statsModal').style.display = 'none';
+    }
+
+    // ========== PWA SUPPORT ==========
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        document.getElementById('installBtn').style.display = 'block';
+    });
+
+    document.getElementById('installBtn').onclick = async () => {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') {
+                console.log('App installed');
+            }
+            deferredPrompt = null;
+            document.getElementById('installBtn').style.display = 'none';
         }
+    };
 
-        window.addEventListener('beforeinstallprompt', (e) => {
+    // Close modal when clicking outside
+    window.onclick = (event) => {
+        const modal = document.getElementById('statsModal');
+        if (event.target === modal) {
+            closeStats();
+        }
+    };
+    
+    // Prevent default behavior for favorite and English buttons
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('.favorite-star') || e.target.closest('.english-speech-btn')) {
             e.preventDefault();
-            deferredPrompt = e;
-            installBtn.classList.remove('hidden');
-        });
-
-        async function handleInstallClick() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    deferredPrompt = null;
-                    installBtn.classList.add('hidden');
-                }
-            } else {
-                document.getElementById('installModal').style.display = 'flex';
-            }
         }
-
-        window.addEventListener('appinstalled', () => {
-            installBtn.classList.add('hidden');
-        });
-
-        // --- SPEECH PRE-WARMING ---
-        let speechWarmed = false;
-        function preWarmSpeech() {
-            if (speechWarmed) return;
-            const ut = new SpeechSynthesisUtterance("");
-            ut.volume = 0;
-            window.speechSynthesis.speak(ut);
-            speechWarmed = true;
-        }
-
-        // --- DATA & LOGIC ---
-        let hwPhrases = JSON.parse(localStorage.getItem('homeworkPhrases')) || [
-            { fr: "Je m'appelle Sophie", en: "My name is Sophie" },
-            { fr: "J'ai six ans", en: "I am six years old" }
-        ];
-
-        const datasets = {
-            "basics": [{ fr: "Oui", en: "Yes" }, { fr: "Non", en: "No" }, { fr: "Merci", en: "Thank you" }, { fr: "S'il vous plaît", en: "Please" }, { fr: "Pardon", en: "Sorry" }, { fr: "D'accord", en: "Okay" }],
-            "school": [{ fr: "Puis-je aller aux toilettes?", en: "Can I go to the bathroom?" }, { fr: "J'ai fini!", en: "I'm finished!" }, { fr: "Aide-moi, s'il vous plaît", en: "Help me, please" }],
-            "feelings": [{ fr: "Je suis contente", en: "I am happy" }, { fr: "Je suis fatiguée", en: "I am tired" }, { fr: "J'ai faim", en: "I am hungry" }],
-            "urgent": [{ fr: "Aidez-moi!", en: "Help me!" }, { fr: "Arrête!", en: "Stop!" }, { fr: "J'ai mal", en: "I am hurt" }],
-            "questions": [{ fr: "Qu'est-ce que c'est?", en: "What is it?" }, { fr: "Pourquoi?", en: "Why?" }],
-            "recess": [{ fr: "On joue ensemble?", en: "Shall we play together?" }, { fr: "C'est mon tour", en: "It's my turn" }],
-            "cafeteria": [{ fr: "J'ai faim", en: "I'm hungry" }, { fr: "C'est bon!", en: "It's good!" }],
-            "colors": [{ fr: "Rouge", en: "Red" }, { fr: "Bleu", en: "Blue" }, { fr: "Jaune", en: "Yellow" }],
-            "numbers": [{ fr: "Un", en: "1" }, { fr: "Deux", en: "2" }, { fr: "Trois", en: "3" }],
-            "supplies": [{ fr: "Un crayon", en: "A pencil" }, { fr: "Une gomme", en: "An eraser" }],
-            "greetings": [{ fr: "Bonjour", en: "Hello" }, { fr: "Salut", en: "Hi" }, { fr: "Au revoir", en: "Goodbye" }],
-            "others": [{ fr: "Regarde!", en: "Look!" }, { fr: "Moi aussi", en: "Me too" }]
-        };
-
-        function showView(viewId) {
-            preWarmSpeech(); 
-            const catView = document.getElementById('categoriesView');
-            const phrView = document.getElementById('phrasesView');
-            const backBtn = document.getElementById('backBtn');
-            const hwCtrl = document.getElementById('homeworkControls');
-
-            if (viewId === 'categories') {
-                catView.classList.remove('hidden');
-                phrView.classList.add('hidden');
-                backBtn.classList.add('hidden');
-                updateHwCount();
-            } else {
-                catView.classList.add('hidden');
-                phrView.classList.remove('hidden');
-                backBtn.classList.remove('hidden');
-                let list = viewId === 'homework' ? hwPhrases : datasets[viewId];
-                renderPhrases(list, viewId);
-                if (viewId === 'homework') {
-                    hwCtrl.classList.remove('hidden');
-                    document.getElementById('hwInput').value = hwPhrases.map(p => p.fr === p.en ? p.fr : `${p.fr} | ${p.en}`).join('\n');
-                } else {
-                    hwCtrl.classList.add('hidden');
-                }
-            }
-            window.scrollTo(0, 0);
-        }
-
-        function renderPhrases(list, catId) {
-            const container = document.getElementById('phraseList');
-            container.innerHTML = list.map((p, i) => {
-                const colorIdx = i % 8;
-                return `
-                <div id="p-${catId}-${i}" class="kid-card phrase-${colorIdx} p-6 flex flex-col gap-4 phrase-card">
-                    <div onclick="speak('${p.fr.replace(/'/g, "\\'")}', 'fr-FR', 'p-${catId}-${i}')" class="flex items-center gap-5 cursor-pointer">
-                        <div class="bg-white/90 w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-sm">🇫🇷</div>
-                        <h3 class="text-2xl font-black text-slate-800 flex-1 leading-tight">${p.fr}</h3>
-                    </div>
-                    <div onclick="speak('${p.en.replace(/'/g, "\\'")}', 'en-US', 'p-${catId}-${i}')" class="flex items-center gap-5 cursor-pointer pt-4 border-t-4 border-black/5">
-                        <div class="bg-white/60 w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-sm">🇬🇧</div>
-                        <h3 class="text-xl font-black text-slate-600 flex-1">${p.en}</h3>
-                    </div>
-                </div>
-            `}).join('');
-        }
-
-        function speak(text, lang, id) {
-            if (!text) return;
-            preWarmSpeech();
-            window.speechSynthesis.cancel();
-            document.querySelectorAll('.phrase-card').forEach(c => c.classList.remove('speaking'));
-            const card = document.getElementById(id);
-            if (card) card.classList.add('speaking');
-            const ut = new SpeechSynthesisUtterance(text);
-            ut.lang = lang;
-            ut.rate = lang === 'fr-FR' ? 0.75 : 0.9;
-            ut.onend = () => card && card.classList.remove('speaking');
-            window.speechSynthesis.speak(ut);
-        }
-
-        async function saveHW() {
-            const val = document.getElementById('hwInput').value;
-            const btn = document.getElementById('saveHwBtn');
-            const lines = val.split('\n').map(l => l.trim()).filter(l => l !== "");
-            btn.disabled = true;
-            btn.innerHTML = `<div class="loader mx-auto"></div>`;
-            let newList = [];
-            for (let line of lines) {
-                if (line.includes('|')) {
-                    const parts = line.split('|');
-                    newList.push({ fr: parts[0].trim(), en: parts[1].trim() });
-                } else if (apiKey && navigator.onLine) {
-                    try {
-                        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ contents: [{ parts: [{ text: `Translate to simple English for a child: "${line}"` }] }] })
-                        });
-                        const data = await response.json();
-                        newList.push({ fr: line, en: data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || line });
-                    } catch (e) { newList.push({ fr: line, en: line }); }
-                } else { newList.push({ fr: line, en: line }); }
-            }
-            hwPhrases = newList;
-            localStorage.setItem('homeworkPhrases', JSON.stringify(hwPhrases));
-            renderPhrases(hwPhrases, 'homework');
-            btn.disabled = false;
-            btn.innerHTML = "Sauvegardé ! ✨";
-            setTimeout(() => btn.innerHTML = "Save to Phone", 2000);
-        }
-
-        function shareApp() {
-            if (navigator.share) navigator.share({ title: 'Aide Français', url: window.location.href });
-            else prompt("Lien:", window.location.href);
-        }
-
-        function updateHwCount() {
-            const el = document.getElementById('hwCount');
-            if (el) el.innerText = hwPhrases.length;
-        }
-
-        updateHwCount();
-    </script>
+    });
+</script>
 </body>
 </html>
